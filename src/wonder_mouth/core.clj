@@ -27,21 +27,38 @@
 ; gives wrong answer for number=4 (gives false); because prev_primes does not include '2'
   (if (test_prime_with_prev_primes number prev_primes) true 
     ; test for semi-prime
-    (= 2
-      (apply + (map identity 
-        (let [check_upper_limit (int (floor(/ number 2)))]
-          (for [divisor prev_primes :while (<= divisor check_upper_limit)]     
-            (loop [num number
-                  count_current_divisor 0]
-              (if (not= 0 (rem num divisor))
-                count_current_divisor
-                (recur (/ num divisor) (inc count_current_divisor))
+    (if (= 2
+
+            (loop [
+                  idx_prime 0
+                  count_total_factor 0
+                  ]     
+              (
+                let [
+                  divisor (nth prev_primes idx_prime)
+                  new_count_total_factor (+ count_total_factor 
+                  (loop [num number
+                    count_current_divisor 0]
+                  (if (not= 0 (rem num divisor))
+                    count_current_divisor
+                    (recur (/ num divisor) (inc count_current_divisor))
+                  ))
+                )
+                ]
+                (if (and (<= new_count_total_factor 2) (< idx_prime (dec (count prev_primes)) ) ) 
+                  (recur (inc idx_prime) new_count_total_factor)
+                  new_count_total_factor
+                ) 
               )
+            
             )
-          )
         )
-      ))
-    )
+        true
+        false
+      )
+    
+
+
   )
 )
 
@@ -93,6 +110,39 @@
   )
 )
 ; ---------------------
+; (defn test_prime_or_semi_prime [number prev_primes]
+;     ; test for semi-prime
+;       (if (= 2
+
+;             (loop [
+;                   idx_prime 0
+;                   count_total_factor 0
+;                   ]     
+;               (
+;                 let [
+;                   divisor (nth prev_primes idx_prime)
+;                   new_count_total_factor (+ count_total_factor 
+;                   (loop [num number
+;                     count_current_divisor 0]
+;                   (if (not= 0 (rem num divisor))
+;                     count_current_divisor
+;                     (recur (/ num divisor) (inc count_current_divisor))
+;                   ))
+;                 )
+;                 ]
+;                 (if (and (<= new_count_total_factor 2) (< idx_prime (dec (count prev_primes)) ) ) 
+;                   (recur (inc idx_prime) new_count_total_factor)
+;                   new_count_total_factor
+;                 ) 
+;               )
+            
+;             )
+;         )
+;         true
+;         false
+;       )
+; )
+;
 (defn -main
   "reactions..."
   [& args]
@@ -101,4 +151,11 @@
    (print sym)
   )
   (println "")
+;  (
+;    println
+;    (test_prime_or_semi_prime 9 [2 3 5 7])
+
+;  )
+
 )
+
